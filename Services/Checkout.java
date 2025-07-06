@@ -5,7 +5,7 @@ import Abstracts.Inventory;
 import Abstracts.Product;
 import Abstracts.Validator;
 
-import java.util.Vector;
+import java.util.HashMap;
 
 import Abstracts.Cart;
 
@@ -21,7 +21,7 @@ public class Checkout {
 
         // Validate empty cart
         try {
-            Validator.checkEmptyVector(customer.getCart().getProducts());
+            Validator.checkEmptyMap(customer.getCart().getProducts());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Cart is empty.");
         }
@@ -31,7 +31,7 @@ public class Checkout {
         inventory.checkExpiringProducts(customer.getCart().getProducts());
 
         // Initiate shipping service if there are shippable products
-        Vector<Product> shippableProducts = ShippingService.getShippableProducts(customer.getCart().getProducts());
+        HashMap<Product, Integer> shippableProducts = ShippingService.getShippableProducts(customer.getCart().getProducts());
         if (!shippableProducts.isEmpty()) {
             initiateShippingService(shippableProducts); // Strictly items with getWeight and getName methods
         }
@@ -60,9 +60,9 @@ public class Checkout {
         this.checkoutDetails.append("Amount: ").append(this.amount);
     }
 
-    private void initiateShippingService(Vector<Product> ShippableProducts) throws IllegalArgumentException {
-        Validator.checkEmptyVector(ShippableProducts);
-        this.shippingService = new ShippingService(ShippableProducts);
+    private void initiateShippingService(HashMap<Product, Integer> shippableProducts) throws IllegalArgumentException {
+        Validator.checkEmptyMap(shippableProducts);
+        this.shippingService = new ShippingService(shippableProducts);
         this.shipping = shippingService.getShippingPrice();
     }
 

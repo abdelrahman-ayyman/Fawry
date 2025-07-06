@@ -1,5 +1,6 @@
 package Services;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 import Abstracts.Product;
@@ -10,13 +11,13 @@ public class ShippingService {
 
     // private String shippingInfo;
     private StringBuilder shippingDetails;
-    private Vector<Product> shippableProducts;
+    private HashMap<Product, Integer> shippableProducts;
     private double totalWeight;
     private double shippingPrice;
 
-    ShippingService(/* Customer customer, */ Vector<Product> shippableProducts) throws IllegalArgumentException { // Might be expaned in future to include customer details
+    ShippingService(/* Customer customer, */ HashMap<Product, Integer> shippableProducts) throws IllegalArgumentException { // Might be expaned in future to include customer details
         // this.shippingInfo = customer.getAddress();
-        Validator.checkEmptyVector(shippableProducts);
+        Validator.checkEmptyMap(shippableProducts);
 
         this.totalWeight = 0;
         this.shippingPrice = 0;
@@ -28,9 +29,11 @@ public class ShippingService {
 
     public void generateNotice() {
         shippingDetails = new StringBuilder("** Shipment notice **\n");
-        for (Product product : shippableProducts) {
-            shippingDetails.append(product.toString())
-                            .append(formattedWeight(Shippable.class.cast(product).getWeight() * product.getQuantity()))
+        for (Product product : shippableProducts.keySet()) {
+            shippingDetails.append(shippableProducts.get(product))
+                            .append("x ")
+                            .append(product.toString())
+                            .append(formattedWeight(Shippable.class.cast(product).getWeight() * shippableProducts.get(product)))
                            .append("\n");
         }
 
@@ -38,16 +41,17 @@ public class ShippingService {
     }
 
     public void setProductsWeights() {
-        for (Product product : shippableProducts) {
-            this.totalWeight += Shippable.class.cast(product).getWeight() * product.getQuantity();
+        for (Product product : shippableProducts.keySet()) {
+            this.totalWeight += Shippable.class.cast(product).getWeight() * shippableProducts.get(product);
         }
     }
 
-    public static Vector<Product> getShippableProducts(Vector<Product> products) {
-        Vector<Product> shippableProducts = new Vector<>();
-        for (Product product : products) {
+    public static HashMap<Product, Integer> getShippableProducts(HashMap<Product, Integer> products) {
+        HashMap<Product, Integer> shippableProducts = new HashMap<>();
+        for (HashMap.Entry<Product, Integer> entry : products.entrySet()) {
+            Product product = entry.getKey();
             if (product instanceof Shippable) {
-                shippableProducts.add(product);
+                shippableProducts.put(product, entry.getValue());
             }
         }
         return shippableProducts;

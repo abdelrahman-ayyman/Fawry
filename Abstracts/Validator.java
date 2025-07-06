@@ -1,5 +1,6 @@
 package Abstracts;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Vector;
 
 public class Validator {
@@ -13,6 +14,12 @@ public class Validator {
     public static void checkEmptyVector(Vector<?> vector) {
         if (vector == null || vector.isEmpty()) {
             throw new IllegalArgumentException("Vector cannot be null or empty.");
+        }
+    }
+
+    public static void checkEmptyMap(HashMap<?, ?> map) {
+        if (map == null || map.isEmpty()) {
+            throw new IllegalArgumentException("Map cannot be null or empty.");
         }
     }
 

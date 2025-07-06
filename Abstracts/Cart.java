@@ -1,18 +1,16 @@
 package Abstracts;
 
-import java.util.Vector;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Cart {
-    private Vector<Product> products;
+    private HashMap<Product, Integer> products;
 
     public Cart() {
-        products = new Vector<>();
+        products = new HashMap<>();
     }
 
     public void clearCart() {
-        for (Product product : products) {
-            product.setQuantity(0); // Resetting quantity of each product
-        }
         products.clear();
     }
 
@@ -20,51 +18,51 @@ public class Cart {
         Validator.validateProduct(product);
         Validator.validateAmount(quantity, 0, true);
         int availableQuantity = Inventory.getInventory().getProductQuantity(product);
-        for (Product p : products) {
-            if (p == product) {
-                if (availableQuantity < p.getQuantity() + quantity) {
-                    throw new IllegalArgumentException("Insufficient stock for " + product.getName() + ". Available: " + availableQuantity + ", Requested: " + (p.getQuantity() + quantity));
-                }
-                p.addQuantity(quantity);
-                return;
-            }
+
+        if (availableQuantity < quantity) {
+            throw new IllegalArgumentException("Insufficient stock for " + product.getName() + ". Available: " + availableQuantity + ", Requested: " + quantity);
         }
-        product.addQuantity(quantity);
-        products.add(product);
+
+        products.put(product, products.getOrDefault(product, 0) + quantity);
     }
 
     public void removeProduct(Product product, int quantity) throws IllegalArgumentException {
         Validator.validateProduct(product);
-        for (Product p : products) {
-            if (p == product) {
-                Validator.validateAmount(quantity, p.getQuantity(), false);
-                p.removeQuantity(quantity);
-                if (p.getQuantity() <= 0) {
-                    products.remove(p);
-                }
-                return;
-            }
+        Validator.validateAmount(quantity, products.getOrDefault(product, 0), false);
+        
+        if (!products.containsKey(product)) {
+            throw new IllegalArgumentException("Cannot remove " + quantity + " of " + product.getName() + ". Not enough in cart.");
         }
-        throw new IllegalArgumentException("Product not found in cart: " + product.getName());
+
+        products.put(product, products.get(product) - quantity);
     }
 
-    public Vector<Product> getProducts() {
+    public Integer getProductQuantity(Product product) {
+        Validator.validateProduct(product);
+        return products.getOrDefault(product, 0);
+    }
+
+    public HashMap<Product, Integer> getProducts() {
         return products;
     }
 
     @Override
     public String toString() {
         StringBuilder cartDetails = new StringBuilder();
-        for (Product product : products) {
-            cartDetails.append(product.getQuantity()).append("x ").append(product.getName()).append("\t\t").append(product.getPrice() * product.getQuantity()).append("\n");
+        for (Map.Entry<Product, Integer> entry : products.entrySet()) {
+            Product product = entry.getKey();
+            int quantity = entry.getValue();
+            cartDetails.append(quantity).append("x ").append(product.getName()).append("\t\t").append(product.getPrice() * quantity).append("\n");
         }
         return cartDetails.toString();
     }
 
     public double getTotalPrice() {
         double total = 0;
-        for (Product product : products) {
-            total += product.getPrice() * product.getQuantity();
+        for (Map.Entry<Product, Integer> entry : products.entrySet()) {
+            Product product = entry.getKey();
+            int quantity = entry.getValue();
+            total += product.getPrice() * quantity;
         }
         return total;
     }

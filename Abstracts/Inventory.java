@@ -2,7 +2,6 @@ package Abstracts;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 
 import Interfaces.Interfaces.Perishable;
 
@@ -26,11 +25,13 @@ public class Inventory {
         productStock.put(product, productStock.get(product) - quantity);
     }
 
-    public void removeProducts(Vector<Product> products) throws IllegalArgumentException {
-        for (Product product : products) {
+    public void removeProducts(HashMap<Product, Integer> products) throws IllegalArgumentException {
+        for (Map.Entry<Product, Integer> entry : products.entrySet()) {
+            Product product = entry.getKey();
+            int quantity = entry.getValue();
             Validator.validateProduct(product);
-            Validator.validateAmount(product.getQuantity(), productStock.getOrDefault(product, 0), false);
-            productStock.put(product, productStock.get(product) - product.getQuantity());
+            Validator.validateAmount(quantity, productStock.getOrDefault(product, 0), false);
+            productStock.put(product, productStock.get(product) - quantity);
         }
     }
 
@@ -39,18 +40,21 @@ public class Inventory {
         return productStock.getOrDefault(product, 0);
     }
 
-    public void checkAvailability(Vector<Product> cart) throws IllegalArgumentException {
-        for (Product product : cart) {
+    public void checkAvailability(HashMap<Product, Integer> cart) throws IllegalArgumentException {
+        for (Map.Entry<Product, Integer> entry : cart.entrySet()) {
+            Product product = entry.getKey();
+            int requestedQuantity = entry.getValue();
             int availableQuantity = getProductQuantity(product);
-            if (availableQuantity < product.getQuantity()) {
+            if (availableQuantity < requestedQuantity) {
                 System.out.println(inventoryInstance);
-                throw new IllegalArgumentException("Insufficient stock for " + product.getName() + ". Available: " + availableQuantity + ", Requested: " + product.getQuantity());
+                throw new IllegalArgumentException("Insufficient stock for " + product.getName() + ". Available: " + availableQuantity + ", Requested: " + requestedQuantity);
             }
         }
     }
 
-    public void checkExpiringProducts(Vector<Product> cart) throws IllegalArgumentException {
-        for (Product product : cart) {
+    public void checkExpiringProducts(HashMap<Product, Integer> cart) throws IllegalArgumentException {
+        for (Map.Entry<Product, Integer> entry : cart.entrySet()) {
+            Product product = entry.getKey();
             if (product instanceof Perishable && ((Perishable) product).isExpired()) {
                 throw new IllegalArgumentException("Product " + product.getName() + " is expired and cannot be purchased.");
             }
