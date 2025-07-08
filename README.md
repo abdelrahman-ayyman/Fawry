@@ -26,7 +26,8 @@
 ---
 
 ## Screenshots
-![Screenshot 2025-07-08 231745](https://github.com/user-attachments/assets/059bb7ed-1077-4a12-8244-af609148b72d)
-![Screenshot 2025-07-08 231736](https://github.com/user-attachments/assets/80736022-9dbf-4930-98aa-081da0cd19e9)
+Valid Case: ![Screenshot 2025-07-08 231736](https://github.com/user-attachments/assets/80736022-9dbf-4930-98aa-081da0cd19e9)
+
+Invalid cases: ![Screenshot 2025-07-08 231745](https://github.com/user-attachments/assets/059bb7ed-1077-4a12-8244-af609148b72d)
 
 
