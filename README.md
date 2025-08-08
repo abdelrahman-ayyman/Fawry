@@ -59,8 +59,11 @@ Customer 1 Receipt:
 Subtotal: 2300.0
 Shipping: 10.0
 Amount: 2310.0
-Customer's remaining balance: -310.0
+Customer's remaining balance: 310.0
 ```
+
+## Invalid Cases
+<div align='center'> <img width='600px' src="https://github.com/user-attachments/assets/059bb7ed-1077-4a12-8244-af609148b72d" /> </div>
 
 ## Project Structure
 
