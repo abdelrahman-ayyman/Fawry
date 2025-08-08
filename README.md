@@ -1,4 +1,4 @@
-# Fawry
+# Java E-Commerce Inventory and Checkout System
 
 A Java-based inventory and checkout system simulating e-commerce functionality. The project manages products, customer accounts, shopping carts, and order processing, including inventory tracking, input validation, and receipt generation. The codebase applies object-oriented design, the Singleton pattern for centralized inventory control, and SOLID principles to ensure modularity, extensibility, and maintainability.
 
